@@ -45,10 +45,12 @@ describe Session do
       it "saves new and old data to the cookie" do
         session = Session.new(req)
         session['machine'] = 'mocha'
+        # debugger
         session.store_session(res)
         cookie = res.cookies.find { |c| c.name == '_rails_lite_app' }
         h = JSON.parse(cookie.value)
         h['pho'].should == 'soup'
+        # debugger
         h['machine'].should == 'mocha'
       end
     end

@@ -40,6 +40,7 @@ describe Params do
 
   context "post body" do
     it "handles single key and value" do
+      # debugger
       req.stub(:body) { "key=val" }
       params = Params.new(req)
       params["key"].should == "val"
