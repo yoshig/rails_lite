@@ -21,8 +21,7 @@ class Route
   # instantiate controller and call controller action
   def run(req, res)
     if matches?(req)
-      match_hash = Hash[@match.names.map(&:to_sym).zip(@match.captures)]
-      debugger
+      match_hash = Hash[@match.names.zip(@match.captures)]
       @controller_class.new(req, res, match_hash).invoke_action(@action_name)
       res.body
     end
@@ -44,7 +43,7 @@ class Router
   # evaluate the proc in the context of the instance
   # for syntactic sugar :)
   def draw(&proc)
-    Object.instance_eval(&proc)
+    instance_eval &proc
   end
 
   # make each of these methods that

@@ -2,6 +2,7 @@ require 'erb'
 require 'active_support/inflector'
 require_relative 'params'
 require_relative 'session'
+require_relative 'flash'
 require 'debugger'
 
 
@@ -12,8 +13,9 @@ class ControllerBase
   def initialize(req, res, route_params = {})
     @req = req
     @res = res
-    @session = session
-    @params = Params.new(req)
+    session
+    flash
+    @params = Params.new(req, route_params)
   end
 
   # populate the response with content
@@ -25,6 +27,7 @@ class ControllerBase
     raise "You already rendered this page" if already_rendered?
     @already_built_response = @res
     @session.store_session(@res)
+    @flash.reset!(@res)
   end
 
   # helper method to alias @already_rendered
@@ -39,6 +42,7 @@ class ControllerBase
     raise "You already rendered this page" if already_rendered?
     @already_built_response = @res
     @session.store_session(@res)
+    @flash.store_flash(@res)
   end
 
   # use ERB and binding to evaluate templates
@@ -54,6 +58,10 @@ class ControllerBase
   # method exposing a `Session` object
   def session
     @session ||= Session.new(@req)
+  end
+
+  def flash
+    @flash ||= Flash.new(@req)
   end
 
   # use this with the router to call action_name (:index, :show, :create...)

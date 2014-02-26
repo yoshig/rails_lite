@@ -20,6 +20,8 @@ class MyController < ControllerBase
     # after you have sessions going, uncomment:
    session["count"] ||= 0
    session["count"] += 1
+   flash["tester"] ||= 10
+   flash["tester"] += 3
    render :counting_show
   end
 end
