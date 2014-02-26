@@ -3,15 +3,15 @@ class Route
 
   def initialize(pattern, http_method, controller_class, action_name)
     @pattern, @http_method, = pattern, http_method
-    @controller_class, @action = controller_class, action_name
+    @controller_class, @action_name = controller_class, action_name
 
   end
 
   # checks if pattern matches path and method matches request method
   def matches?(req)
     begin
-      @pattern.match(req.path.downcase) &&
-        @http_method.to_s.match(req.request_method.to_s)
+      @match = @pattern.match(req.path.downcase)
+      @match && @http_method.to_s.match(req.request_method.to_s)
     rescue
       false
     end
@@ -21,7 +21,10 @@ class Route
   # instantiate controller and call controller action
   def run(req, res)
     if matches?(req)
-      @controller_class.new(req, res, {}).invoke_action(@action)
+      match_hash = Hash[@match.names.map(&:to_sym).zip(@match.captures)]
+      debugger
+      @controller_class.new(req, res, match_hash).invoke_action(@action_name)
+      res.body
     end
   end
 end
