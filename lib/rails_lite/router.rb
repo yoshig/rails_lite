@@ -10,8 +10,8 @@ class Route
   # checks if pattern matches path and method matches request method
   def matches?(req)
     begin
-      @match = @pattern.match(req.path.downcase)
-      @match && @http_method.to_s.match(req.request_method.to_s)
+      @match = @pattern.match(req.path)
+      @match && @http_method.to_s.match(req.request_method.downcase)
     rescue
       false
     end
@@ -36,7 +36,7 @@ class Router
   end
 
   # simply adds a new route to the list of routes
-  def add_route(pattern, method, controller_class, action_name)
+  def add_route(pattern, controller_class, action_name, method)
     @routes << Route.new(pattern, method, controller_class, action_name)
   end
 
